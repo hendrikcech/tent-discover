@@ -1,11 +1,25 @@
 {
   "name": "tent-discover",
-  "version": "0.0.0",
+  "description": "Performes the Tent discovery dance",
+  "keywords": [
+    "tent",
+    "discovery"
+    "discover"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": {
+    "name": "Hendrik Cech",
+    "email": "hendrik.cech@gmail.com"
+  },
+  "version": "0.0.1",
   "main": "discover.js",
   "scripts": {
     "test": "tap ./test"
   },
-  "license": "BSD",
+  "license": "MIT",
   "dependencies": {
     "request": "~2.14.0"
   },
