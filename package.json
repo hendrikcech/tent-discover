@@ -21,7 +21,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "request": "~2.14.0"
+    "tent-post": "0.0.x"
   },
   "devDependencies": {
     "tap": "~0.4.0"
