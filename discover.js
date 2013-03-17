@@ -1,11 +1,11 @@
 var request = require('request')
-var post = require('tent-post')
+var request = require('tent-request')
 
 /* gets the profile of the provided entity */
 module.exports = function(entity, callback) {
 
 	/* performes a head request to the provided entity url to get the link to the tent profile */
-	post('head', entity, null, null, function(err, body, resp) {
+	request('head', entity, null, null, function(err, body, resp) {
 		if(err) return callback(err)
 
 		//parsing profileURL out of link header (props to https://github.com/bastinat0r/node-tent-client/blob/master/tent.js#L44)
@@ -19,7 +19,7 @@ module.exports = function(entity, callback) {
 		}
 		
 		/* gets the public profile of the provided entity */
-		post('get', profileUrl, null, null, function(err, body, resp) {
+		request('get', profileUrl, null, null, function(err, body, resp) {
 			if(err || (resp.statusCode != 200 && resp.statusCode != 404)) {
 				return callback('Error fetching profile:' +err)
 			} else if(resp.statusCode == 404) {

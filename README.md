@@ -28,6 +28,11 @@ var discover = require('tent-discover')
 The first argument `entity` needs to be a full entity url (with http:// / https://).
 The callback will be triggerd with an `err` object for potential errors and hopefully a `profile` object, which contains the raw JSON as returned from the server. 
 
+### test
+```
+npm test
+```
+
 ## todo
 - implement html scraping for link tags described [here](https://tent.io/docs/server-protocol#html-codelinkcode-tag)
 
