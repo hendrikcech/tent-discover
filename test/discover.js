@@ -1,12 +1,33 @@
-var test = require('tap').test
-var discover = require('../discover.js')
+var vows = require('vows')
+var assert = require('assert')
+var discover = require('../discover')
 
-test('discover test entity (https://hendrik.tent.is)', function(t) {
-	discover('https://hendrik.tent.is', function(err, profile) {
-		t.ok(!err, 'error returned: '+err)
-		t.equal(typeof profile, 'object', 'profile typeof object')
-		t.ok(profile, 'no profile returned: '+profile)
-	
-		t.end()
-	})
-})
+var validEntity = 'https://hendrik.tent.is'
+var invalidEntity = 'http://example.ocm'
+
+vows.describe('Testing discover function').addBatch({
+	'when discovering valid https test entity': {
+		topic: function() { 
+			discover('https://hendrik.tent.is', this.callback)
+		},
+
+		'returns no error': function(err, profile) {
+			assert.isNull(err)  
+		},
+		'returns profile': function(err, profile) {
+			assert.isObject(profile)
+		}
+	},
+	'when discovering not valid test entity': {
+		topic: function() {
+			discover('http://example.com', this.callback)
+		},
+
+		'returns an error': function(err, profile) {
+			assert.isNotNull(err)
+		},
+		'returns no profile': function(err, profile) {
+			assert.isUndefined(profile)
+		}
+	}
+}).export(module)
