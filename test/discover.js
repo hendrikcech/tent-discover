@@ -2,13 +2,25 @@ var vows = require('vows')
 var assert = require('assert')
 var discover = require('../discover')
 
-var validEntity = 'https://hendrik.tent.is'
-var invalidEntity = 'http://example.ocm'
+var testServer = require('./testServer')
 
-vows.describe('Testing discover function').addBatch({
-	'when discovering valid https test entity': {
-		topic: function() { 
-			discover('https://hendrik.tent.is', this.callback)
+var location = '127.0.0.1'
+var port = 8000
+
+vows.describe('Testing discover functionality').addBatch({
+	'starting up testserver': {
+		topic: function() {
+			testServer.start(location, port, this.callback)
+		},
+
+		'started': function() {
+			assert.isNull(null)
+		}
+	}
+}).addBatch({
+	'profile in header': {
+		topic: function() {
+			discover('http://'+location+':'+port+'/inHeader', this.callback)
 		},
 
 		'returns no error': function(err, profile) {
@@ -18,7 +30,19 @@ vows.describe('Testing discover function').addBatch({
 			assert.isObject(profile)
 		}
 	},
-	'when discovering not valid test entity': {
+	'profile in HTML': {
+		topic: function() {
+			discover('http://'+location+':'+port+'/inHTML', this.callback)
+		},
+
+		'returns no error': function(err, profile) {
+			assert.isNull(err)  
+		},
+		'returns profile': function(err, profile) {
+			assert.isObject(profile)
+		}
+	},
+	'not valid test entity': {
 		topic: function() {
 			discover('http://example.com', this.callback)
 		},

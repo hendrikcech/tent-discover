@@ -17,7 +17,7 @@
   "version": "0.0.1",
   "main": "discover.js",
   "scripts": {
-    "test": "vows ./test/* --spec"
+    "test": "vows ./test/discover --spec"
   },
   "license": "MIT",
   "dependencies": {
