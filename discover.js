@@ -74,8 +74,8 @@ function getProfile(profileURLs, callback) {
 			method: 'get',
 			url: profileURLs[i]
 		}, function(err, body, res) {
-			if(err || typeof body !== 'object') {
-				//console.log(err)
+			if(err) return callback(err)
+			if(res.statusCode < 200 || res.statusCode > 299 || typeof body !== 'object') {
 				i++
 				return tryURL()
 			}
