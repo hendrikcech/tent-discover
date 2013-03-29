@@ -5,23 +5,58 @@ var portG = null
 
 var server = http.createServer(function (req, res) {
 	switch(req.url) {
-		case '/inHeader':
+		case '/inHeader/absolute':
 			res.writeHead(200, {
 				'link': [
-					'<http://'+locationG+':'+portG+'/noProfile>; rel="https://tent.io/rels/profile',
-					'</profile>; rel="https://tent.io/rels/profile'
+					'<http://'+locationG+':'+portG+'/profile>; rel="https://tent.io/rels/profile'
 				]
 			})
 			res.end('jaja, bla hier bitte')
 		break
-		case '/inHTML':
-			var html = "<!DOCTYPE html><html lang=\"en\">  <head><meta content=\"width=device-width, initial-scale=1.0\" name=\"viewport\" />    <title>Tent - the decentralized social web</title>    <link href=\"https://d31dxsia6hg3x2.cloudfront.net/assets/css/bootstrap-cb0b9b6b1fd.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />    <link href=\"https://d31dxsia6hg3x2.cloudfront.net/assets/css/bootstrap-responsive-cb3a254477b.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />  <link href=\"http://"+locationG+":"+portG+"/profile\" rel=\"https://tent.io/rels/profile\" /> <link href=\"/profile\" rel=\"https://tent.io/rels/profile\" /> <link href=\"https://d31dxsia6hg3x2.cloudfront.net/assets/css/style-cb8d80f1e01.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" /></head><body></body></html>"
+		case '/inHeader/relative':
+			case '/inHeader/absolute':
+				res.writeHead(200, {
+					'link': [
+						'</profile>; rel="https://tent.io/rels/profile'
+					]
+				})
+				res.end('jaja, bla hier bitte')
+		break
+		case '/inHeader/two':
+			case '/inHeader/absolute':
+				res.writeHead(200, {
+					'link': [
+						'</noProfile>; rel="https://tent.io/rels/profile',
+						'</profile>; rel="https://tent.io/rels/profile'
+					]
+				})
+				res.end('jaja, bla hier bitte')
+		break
+		case '/inHTML/absolute':
+			var html = generateHTML('<link href=\"http://'+locationG+':'+portG+'/profile\" '
+					+ 'rel=\"https://tent.io/rels/profile\" />')
+			res.writeHead(200)
+			res.end(html)
+		break
+		case '/inHTML/relativ':
+			var html = generateHTML('<link href=\"/profile\" rel=\"https://tent.io/rels/profile\" />')
+			res.writeHead(200)
+			res.end(html)
+		break
+		case '/inHTML/two':
+			var html = generateHTML('<link href=\"/noProfile\" rel=\"https://tent.io/rels/profile\" />'
+					+ '<link href=\"/profile\" rel=\"https://tent.io/rels/profile\" />')
 			res.writeHead(200)
 			res.end(html)
 		break
 		case '/noProfile':
-			res.writeHead(200)
-			res.end('everything, but no profile')
+			var trickHtml = generateHTML('')
+			res.writeHead(200, {
+				'link': [
+					'</profile>; rel="https://itsATrap.com'
+				]
+			})
+			res.end(trickHtml)
 		break
 		case '/profile':
 			var profile = {
@@ -61,6 +96,12 @@ var server = http.createServer(function (req, res) {
 		break
 	}
 })
+
+function generateHTML(inject) {
+	var html = "<!DOCTYPE html><html lang=\"en\">  <head><meta content=\"width=device-width, initial-scale=1.0\" name=\"viewport\" />    <title>Tent - the decentralized social web</title>    <link href=\"https://d31dxsia6hg3x2.cloudfront.net/assets/css/bootstrap-cb0b9b6b1fd.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />    <link href=\"https://d31dxsia6hg3x2.cloudfront.net/assets/css/bootstrap-responsive-cb3a254477b.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" /> " + inject + " <link href=\"https://d31dxsia6hg3x2.cloudfront.net/assets/css/style-cb8d80f1e01.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" /></head><body></body></html>"
+
+	return html
+}
 
 module.exports.start = function(location, port, callback) {
 	locationG = location

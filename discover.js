@@ -46,7 +46,7 @@ function searchHTML(url, callback) {
 		}
 
 		if(profileURLs.length > 0) getProfile(profileURLs, callback)
-		else callback('No profile found', null)
+		else callback('No profile found')
 	})
 }
 
@@ -66,20 +66,16 @@ function processURL(profileURL, url) {
 }
 
 function getProfile(profileURLs, callback) {
-	console.log('getProfile')
-
 	var i = 0
 	var tryURL = function() {
-		console.log('trying', profileURLs[i])
-
-		if(!profileURLs[i]) return callback('No profile found', null)
+		if(!profileURLs[i]) return callback('No profile found')
 
 		request({
 			method: 'get',
 			url: profileURLs[i]
 		}, function(err, body, res) {
 			if(err || typeof body !== 'object') {
-				console.log(err)
+				//console.log(err)
 				i++
 				return tryURL()
 			}
