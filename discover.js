@@ -5,7 +5,7 @@ module.exports = function(url, callback) {
 	request({
 		method: 'head',
 		url: url
-	}, function(err, body, res) {
+	}, function(err, res, body) {
 		if(err) return callback(err)
 
 		var linkHeader = res.headers.link
@@ -34,7 +34,7 @@ function searchHTML(url, callback) {
 	request({
 		method: 'get',
 		url: url
-	}, function(err, body) {
+	}, function(err, res, body) {
 		if(err) return callback(err)
 		var profileURLs = []
 
@@ -52,13 +52,19 @@ function searchHTML(url, callback) {
 
 function processURL(profileURL, url) {
 	profileURL = urlMod.parse(profileURL)
-	if(!profileURL.host) { //relative url?
+	//console.log('HOST' + profileURL.host + 'YO' + typeof profileURL.host +'YO' +url)
+	if(profileURL.host === null) { //relative url?
 		var parsedURL = urlMod.parse(url)
-
+		
 		//merge profileURL and parsedURL
 		var newObj = {}
-		for (var attrname in parsedURL) { newObj[attrname] = parsedURL[attrname]; }
-		for (var attrname in profileURL) { newObj[attrname] = profileURL[attrname]; }
+		for (var attrname in parsedURL) {
+			newObj[attrname] = parsedURL[attrname]
+		}
+		for (var attrname in profileURL) { 
+			if(profileURL[attrname] !== null)
+				newObj[attrname] = profileURL[attrname]
+		}
 		profileURL = newObj
 	}
 	profileURL = urlMod.format(profileURL)
@@ -73,9 +79,9 @@ function getProfile(profileURLs, callback) {
 		request({
 			method: 'get',
 			url: profileURLs[i]
-		}, function(err, body, res) {
-			if(err) return callback(err)
-			if(res.statusCode < 200 || res.statusCode > 299 || typeof body !== 'object') {
+		}, function(err, res, body) {
+			if(err) return callback(profileURLs[i] + err)
+			if(res.statusCode < 200 || res.statusCode >= 300 || typeof body !== 'object') {
 				i++
 				return tryURL()
 			}

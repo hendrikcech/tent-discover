@@ -2,6 +2,14 @@ var http = require('http')
 
 var locationG = null
 var portG = null
+module.exports.start = function(location, port, callback) {
+	locationG = location
+	portG = port
+	server.listen(port, location)
+	setTimeout(function() {
+		callback()
+	}, 2000)
+}
 
 var server = http.createServer(function (req, res) {
 	switch(req.url) {
@@ -103,10 +111,4 @@ function generateHTML(inject) {
 	return html
 }
 
-module.exports.start = function(location, port, callback) {
-	locationG = location
-	portG = port
-	server.listen(port, location, callback)
-}
-
-module.exports.start('127.0.0.1', 8000)
+//module.exports.start('127.0.0.1', 8000)

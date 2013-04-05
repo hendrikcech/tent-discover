@@ -4,7 +4,7 @@ var discover = require('../discover')
 
 var testServer = require('./testServer')
 
-var location = '127.0.0.1'
+var location = '0.0.0.0'
 var port = 8000
 
 
@@ -51,11 +51,12 @@ function discoverPath() {
 	}
 
 	context['returns no error'] = function(err, profile) {
+		console.log(err)
 		assert.isNull(err)  
 	}
 	context['returns profile'] = function(err, profile) {
-		assert.include(profile, 'https://tent.io/types/info/core/v0.1.0')
 		assert.isObject(profile)
+		assert.include(profile, 'https://tent.io/types/info/core/v0.1.0')
 	}
 
 	return context
