@@ -51,7 +51,6 @@ function discoverPath() {
 	}
 
 	context['returns no error'] = function(err, profile) {
-		console.log(err)
 		assert.isNull(err)  
 	}
 	context['returns profile'] = function(err, profile) {
