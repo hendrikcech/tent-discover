@@ -38,9 +38,9 @@ function searchHTML(url, callback) {
 		if(err) return callback(err)
 		var profileURLs = []
 
-		var linkTag = /<link href="([^"]+)" rel="https:\/\/tent\.io\/rels\/profile"/
-		var profileURL = linkTag.exec(body)
-		if(profileURL) {
+		var linkTag = /<link href="([^"]+)" rel="https:\/\/tent\.io\/rels\/profile"/g
+		var profileURL
+		while(profileURL = linkTag.exec(body)) {
 			profileURL = processURL(profileURL[1], url)
 			profileURLs.push(profileURL)
 		}
