@@ -4,24 +4,25 @@
   "keywords": [
     "tent",
     "discovery",
-    "discover"
+    "discover",
+    "api"
   ],
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/hendrikcech/tent-discover.git"
   },
   "author": {
     "name": "Hendrik Cech",
     "email": "hendrik.cech@gmail.com"
   },
-  "version": "0.0.1",
+  "version": "0.0.0",
   "main": "discover.js",
   "scripts": {
     "test": "vows ./test/discover --spec"
   },
   "license": "MIT",
   "dependencies": {
-    "tent-request": "~0.0.0"
+    "tent-request": "~0.1.0"
   },
   "devDependencies": {
     "vows": "~0.7.0"
