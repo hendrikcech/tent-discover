@@ -1,92 +1,104 @@
-var request = require('tent-request')
+var request = require('hyperdirect').request
+var concat = require('concat-stream')
 var urlMod = require('url')
 
 module.exports = function(url, callback) {
-	request({
-		method: 'head',
-		url: url
-	}, function(err, res, body) {
-		if(err) return callback(err)
+	
+	var req = request(url, { method: 'HEAD' })
 
+	req.on('error', function (err) { return callback(err) })
+	req.on('response', function (res) {
 		var linkHeader = res.headers.link
-
+		
 		if(!linkHeader) return searchHTML(url, callback)
 
 		linkHeader = linkHeader.split(',') //split, if there are multiple urls
 
-		var profileURLs = []
-		linkHeader.map(function(link) {
-			if(link.match(/https:\/\/tent.io\/rels\/profile/i)) { //tent link?
-				var profileURL = link.match(/<([^>]*)>/) //get profileURL
-				if(profileURL) {
-					profileURL = processURL(profileURL[1], url)
-					profileURLs.push(profileURL)
+		var metaURLs = []
+		linkHeader.forEach(function(link) {
+			if(link.match(/https:\/\/tent.io\/rels\/meta-post/i)) { //tent link?
+				var metaURL = link.match(/<([^>]*)>/) //get metaURL
+				if(metaURL) {
+					metaURL = processURL(metaURL[1], url)
+					metaURLs.push(metaURL)
 				}
 			}
 		})
 
-		if(profileURLs.length === 0) searchHTML(url, callback) //no links in header
-		else getProfile(profileURLs, callback)
+		if(metaURLs.length === 0) searchHTML(url, callback) //no links in header
+		else getMeta(metaURLs, callback)
 	})
+
+	req.end()
 }
 
 function searchHTML(url, callback) {
-	request({
-		method: 'get',
-		url: url
-	}, function(err, res, body) {
+	var req = request(url, { method: 'GET' })
+	
+	req.pipe(concat(function(err, data) {
 		if(err) return callback(err)
-		var profileURLs = []
+		var metaURLs = []
 
-		var linkTag = /<link href="([^"]+)" rel="https:\/\/tent\.io\/rels\/profile"/g
-		var profileURL
-		while(profileURL = linkTag.exec(body)) {
-			profileURL = processURL(profileURL[1], url)
-			profileURLs.push(profileURL)
+		var linkTag = /<link href="([^"]+)" rel="https:\/\/tent\.io\/rels\/meta-post"/g
+		var metaURL
+		while(metaURL = linkTag.exec(data)) {
+			metaURL = processURL(metaURL[1], url)
+			metaURLs.push(metaURL)
 		}
-
-		if(profileURLs.length > 0) getProfile(profileURLs, callback)
-		else callback('No profile found')
-	})
+		
+		if(metaURLs.length > 0) getMeta(metaURLs, callback)
+		else callback(new Error('No meta post found'))
+	}))
 }
 
-function processURL(profileURL, url) {
-	profileURL = urlMod.parse(profileURL)
-	//console.log('HOST' + profileURL.host + 'YO' + typeof profileURL.host +'YO' +url)
-	if(profileURL.host === null) { //relative url?
+function processURL(metaURL, url) {
+	metaURL = urlMod.parse(metaURL)
+	//console.log('HOST' + metaURL.host + 'YO' + typeof metaURL.host +'YO' +url)
+	if(metaURL.host === null) { //relative url?
 		var parsedURL = urlMod.parse(url)
 		
-		//merge profileURL and parsedURL
+		//merge metaURL and parsedURL
 		var newObj = {}
 		for (var attrname in parsedURL) {
 			newObj[attrname] = parsedURL[attrname]
 		}
-		for (var attrname in profileURL) { 
-			if(profileURL[attrname] !== null)
-				newObj[attrname] = profileURL[attrname]
+		for (var attrname in metaURL) { 
+			if(metaURL[attrname] !== null)
+				newObj[attrname] = metaURL[attrname]
 		}
-		profileURL = newObj
+		metaURL = newObj
 	}
-	profileURL = urlMod.format(profileURL)
-	return profileURL
+	metaURL = urlMod.format(metaURL)
+	return metaURL
 }
 
-function getProfile(profileURLs, callback) {
+function getMeta(metaURLs, callback) {
 	var i = 0
 	var tryURL = function() {
-		if(!profileURLs[i]) return callback('No profile found')
+		if(!metaURLs[i]) return callback(new Error('No meta post found'))
 
-		request({
-			method: 'get',
-			url: profileURLs[i]
-		}, function(err, res, body) {
-			if(err) return callback(profileURLs[i] + err)
-			if(res.statusCode < 200 || res.statusCode >= 300 || typeof body !== 'object') {
+		//console.log('try', metaURLs[i])
+
+		var req = request(metaURLs[i], { method: 'GET' })
+
+		var statusCode
+		req.on('response', function(res) { statusCode = res.statusCode })
+
+		req.pipe(concat(function(err, data) {
+			if(err) return callback(new Error(metaURLs[i] + err))
+			try {
+				data = JSON.parse(data)
+			} catch(e) {
 				i++
 				return tryURL()
 			}
-			callback(null, body)
-		})
+
+			if(statusCode < 200 || statusCode >= 300) {
+				i++
+				return tryURL()
+			}
+			callback(null, data)
+		}))
 	}
 	tryURL()
 }
