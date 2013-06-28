@@ -39,7 +39,8 @@ function searchHTML(url, callback) {
 		if(err) return callback(err)
 		var metaURLs = []
 
-		var linkTag = /<link href="([^"]+)" rel="https:\/\/tent\.io\/rels\/meta-post"/g
+		var linkTag =
+			/<link href="([^"]+)" rel="https:\/\/tent\.io\/rels\/meta-post"/g
 		var metaURL
 		while(metaURL = linkTag.exec(data)) {
 			metaURL = processURL(metaURL[1], url)
@@ -47,7 +48,7 @@ function searchHTML(url, callback) {
 		}
 		
 		if(metaURLs.length > 0) getMeta(metaURLs, callback)
-		else callback(new Error('No meta post found'))
+		else callback(new Error('No meta post found (1)'))
 	}))
 }
 
@@ -75,7 +76,7 @@ function processURL(metaURL, url) {
 function getMeta(metaURLs, callback) {
 	var i = 0
 	var tryURL = function() {
-		if(!metaURLs[i]) return callback(new Error('No meta post found'))
+		if(!metaURLs[i]) return callback(new Error('No meta post found (2)'))
 
 		//console.log('try', metaURLs[i])
 

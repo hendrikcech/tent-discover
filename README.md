@@ -1,40 +1,33 @@
 # tent-discover
-A node.js implementation of the [Tent](https://tent.io) discovery dance.
+Simple node.js module which performes the [Tent](https://tent.io) discovery dance. Supports the current version 0.3.
 
 ## install
 With npm:
-```
-npm install tent-discover
-```
+
+	npm install tent-discover
 
 ## example
-```
-var discover = require('tent-discover')
-var entity = 'https://example.com'
 
-discover(entity, function(err, profile) {
-    if(err) return console.log(err)
-    console.log(profile)
-})
-```
+	var discover = require('tent-discover')
+	var entity = 'https://example.com'
+
+	discover(entity, function(err, meta) {
+	    if(err) return console.error(err)
+	    console.log(profile)
+	})
+
+[example](example/example.js)
 
 ## methods
 
-```
-var discover = require('tent-discover')
-```
+	var discover = require('tent-discover')
 
-### discover(entity, callback)
-`entity` (string): full entity url (with http:// or https://) to get discovered
-
-- `callback` (function):
-	- `error`: an error object if something bad happend or `null` if not
-	- `profile`: the Tent profiles of the entity, defined [here](https://tent.io/docs/info-types)
+### discover(entity, function callback(error, meta) {})
+Very simple: This function takes the entity to discover and invokes the callback when done. If successful, `meta` should contain the meta post, defined [here](https://tent.io/docs/post-types#meta).
 
 ## test
-```
-npm test
-```
+
+	npm test
 
 ## todo
 - more robust HTML scraping method
