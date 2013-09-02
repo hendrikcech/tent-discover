@@ -34,6 +34,8 @@ module.exports = function(url, callback) {
 
 function searchHTML(url, callback) {
 	var req = request(url, { method: 'GET' })
+
+	req.on('error', callback)
 	
 	req.pipe(concat(function(err, data) {
 		if(err) return callback(err)
@@ -81,6 +83,8 @@ function getMeta(metaURLs, callback) {
 		//console.log('try', metaURLs[i])
 
 		var req = request(metaURLs[i], { method: 'GET' })
+
+		req.on('error', callback)
 
 		var statusCode
 		req.on('response', function(res) { statusCode = res.statusCode })
