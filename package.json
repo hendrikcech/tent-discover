@@ -15,7 +15,7 @@
     "name": "Hendrik Cech",
     "email": "hendrik.cech@gmail.com"
   },
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "discover.js",
   "scripts": {
     "test": "vows ./test/discover --spec"
