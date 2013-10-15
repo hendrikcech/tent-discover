@@ -3,7 +3,6 @@ var concat = require('concat-stream')
 var urlMod = require('url')
 
 module.exports = function(url, callback) {
-	
 	var req = request(url, { method: 'HEAD' })
 
 	req.on('error', function (err) { return callback(err) })
@@ -28,8 +27,6 @@ module.exports = function(url, callback) {
 		if(metaURLs.length === 0) searchHTML(url, callback) //no links in header
 		else getMeta(metaURLs, callback)
 	})
-
-	req.end()
 }
 
 function searchHTML(url, callback) {
