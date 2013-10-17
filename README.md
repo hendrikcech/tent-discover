@@ -22,8 +22,8 @@ With npm:
 
 	var discover = require('tent-discover')
 
-### discover(entity, function callback(error, meta) {})
-Very simple: This function takes the entity to discover and invokes the callback when done. If successful, `meta` should contain the meta post, defined [here](https://tent.io/docs/post-types#meta).
+### discover(entity, function callback(error, meta, response) {})
+Very simple: This function takes the entity to discover and invokes the callback when done. If successful, `meta` should contain the meta post, defined [here](https://tent.io/docs/post-types#meta). `response` contains the raw [http.IncomingMesssage](http://nodejs.org/api/http.html#http_http_incomingmessage) object.
 
 ## test
 

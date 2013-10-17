@@ -77,14 +77,12 @@ function getMeta(metaURLs, callback) {
 	var tryURL = function() {
 		if(!metaURLs[i]) return callback(new Error('No meta post found (2)'))
 
-		//console.log('try', metaURLs[i])
-
 		var req = request(metaURLs[i], { method: 'GET' })
 
 		req.on('error', callback)
 
-		var statusCode
-		req.on('response', function(res) { statusCode = res.statusCode })
+		var response
+		req.on('response', function(res) { response = res })
 
 		req.pipe(concat(function(err, data) {
 			if(err) return callback(new Error(metaURLs[i] + err))
@@ -95,11 +93,11 @@ function getMeta(metaURLs, callback) {
 				return tryURL()
 			}
 
-			if(statusCode < 200 || statusCode >= 300) {
+			if(response.statusCode < 200 || response.statusCode >= 300) {
 				i++
 				return tryURL()
 			}
-			callback(null, data)
+			callback(null, data, response)
 		}))
 	}
 	tryURL()
