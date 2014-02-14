@@ -1,6 +1,12 @@
 var discover = require('../discover')
 
-discover('http://example.tent.is', function(err, meta) {
+var entity = process.argv[2]
+if(!entity) {
+	console.error('usage: node example.js http://entity.com')
+	process.exit(1)
+}
+
+discover(entity, function(err, meta) {
 	if(err) return console.log(err)
-	console.log(JSON.stringify(meta.post.content))
+	console.log(meta)
 })
