@@ -18,7 +18,7 @@
   "version": "0.3.0",
   "main": "discover.js",
   "scripts": {
-    "test": "vows ./test/discover --spec"
+    "test": "tape ./test/test"
   },
   "license": "MIT",
   "dependencies": {
@@ -26,6 +26,6 @@
     "concat-stream": "~0.1.1"
   },
   "devDependencies": {
-    "vows": "~0.7.0"
+    "tape": "~2.4.2"
   }
 }
