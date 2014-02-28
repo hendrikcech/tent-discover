@@ -1,5 +1,6 @@
 # tent-discover
-Simple node.js module which performes the [Tent](https://tent.io) discovery dance. Supports the current version 0.3.
+Simple node.js module which performes the [Tent](https://tent.io) discovery dance. Supports the current version 0.3.  
+[![Build Status](https://travis-ci.org/hendrikcech/tent-discover.png?branch=master)](https://travis-ci.org/hendrikcech/tent-discover)
 
 ## install
 With npm:
