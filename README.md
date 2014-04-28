@@ -14,7 +14,7 @@ With npm:
 
 	discover(entity, function(err, meta) {
 	    if(err) return console.error(err)
-	    console.log(profile)
+	    console.log(meta)
 	})
 
 [example](example/example.js)
